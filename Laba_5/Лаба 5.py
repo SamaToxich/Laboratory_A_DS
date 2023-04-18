@@ -22,8 +22,6 @@ def rec_f(x):
 
 def iter_f(x):
     fn = [100] * 6
-    if x < 2:
-        fn[x - 1] = 100
     for _ in range(2, x + 1):
         fn[-1] = -(fn[4] + fn[0])
         fn[0], fn[1], fn[2], fn[3], fn[4] = fn[1], fn[2], fn[3], fn[4], fn[5]
@@ -109,16 +107,16 @@ try:
         for i, n in enumerate(n_values):
             table.append([n, iter_values[i], rec_values[i], iter_times[i], rec_times[i]])
         # Вывод таблицы
-        a = '¯' * 109
-        b = '_' * 109
-        c = '-' * 109
+        a = '¯' * 112
+        b = '_' * 112
+        c = '-' * 112
         print('\nТаблица:')
         print(f'|{a}|')
-        print('|{:^5}|{:^25}|{:^25}|{:^25}|{:^25}|'.format('n', 'Значение итерации', 'Значение рекурсии',
+        print('|{:^4}|{:^26}|{:^26}|{:^26}|{:^26}|'.format('n', 'Значение итерации', 'Значение рекурсии',
                                                            'Время итерации(с)', 'Время рекурсии(с)'))
         print(f'|{c}|')
         for value in table:
-            print('|{:^5}|{:^25}|{:^25}|{:^25}|{:^25}|'.format(value[0], value[1], value[2], value[3], value[4]))
+            print('|{:^4}|{:^26}|{:^26}|{:^26}|{:^26}|'.format(value[0], value[1], value[2], value[3], value[4]))
         print(f'|{b}|')
 
         print('\nОтчёт:\nРекурсивный подход перестает работать при n = 999 и больше.\nУже для n = 55, рекурсивный '
