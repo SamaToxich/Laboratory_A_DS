@@ -16,7 +16,6 @@ D	Е
 выражение (AТ + G - FТ) * K, где G-нижняя треугольная матрица, полученная из А. Выводятся по мере формирования А,
 F и все матричные операции последовательно. """
 
-from math import ceil
 import random as r
 import numpy as np
 from matplotlib import pyplot as plt
