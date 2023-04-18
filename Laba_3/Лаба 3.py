@@ -38,7 +38,7 @@ try:
         n = int(input('Введите число N больше 4: '))
 
     cnt_b2 = sum_ch4 = 0
-    middle_n = n//2 + n % 2  # Середина матрицы
+    middle_n = n // 2 + n % 2  # Середина матрицы
     A = [[r.randint(-10, 10) for i in range(n)] for j in range(n)]  # Задаём матрицу A
     AT = [[0 for i in range(n)] for j in range(n)]  # Заготовка под транспонированную матрицу А
     F = A.copy()  # Задаём матрицу F
