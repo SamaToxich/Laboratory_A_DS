@@ -165,13 +165,13 @@ try:
     for j in range(n):
         y = list(F[j, ::])
         # Обычный график
-        axs[0, 0].plot(x, y, ',-', label=f"{j + 1} строка.")
-        axs[0, 0].set(title="График с использованием функции plot:", xlabel='Номер элемента в строке',
+        axs[0, 0].plot(x, y, label=f'{j + 1} строка.')
+        axs[0, 0].set(title='График с использованием функции plot:', xlabel='Номер элемента в строке',
                       ylabel='Значение элемента')
         axs[0, 0].grid()
         # Гистограмма
-        axs[1, 0].bar(x, y, 0.4, label=f"{j + 1} строка.")
-        axs[1, 0].set(title="График с использованием функции bar:", xlabel='Номер элемента в строке',
+        axs[1, 0].bar(x, y, 0.4, label=f'{j + 1} строка.')
+        axs[1, 0].set(title='График с использованием функции bar:', xlabel='Номер элемента в строке',
                       ylabel='Значение элемента')
         if n <= 10:
             axs[1, 0].legend(loc='lower right')
@@ -179,7 +179,7 @@ try:
     # Круговой график
     explode = [0.05, 0.07, 0.09, 0.1, 0.15]
     sizes = [round(np.mean(abs(F[i, ::])) * 100 / av, 1) for i in range(n)]
-    axs[0, 1].set_title("График с использованием функции pie:")
+    axs[0, 1].set_title('График с использованием функции pie:')
     axs[0, 1].pie(sizes, labels=list(range(1, n + 1)), explode=explode, autopct='%1.1f%%', shadow=True)
 
     # Тепловая карта
@@ -193,10 +193,10 @@ try:
         return im, cbar
 
 
-    def annotate_heatmap(im, data=None, textcolors=("black", "white"), threshold=0):
+    def annotate_heatmap(im, data=None, textcolors=('black', 'white'), threshold=0):
         if not isinstance(data, (list, np.ndarray)):
             data = im.get_array()
-        kw = dict(horizontalalignment="center", verticalalignment="center")
+        kw = dict(horizontalalignment='center', verticalalignment='center')
         texts = []
         for i in range(data.shape[0]):
             for j in range(data.shape[1]):
@@ -206,40 +206,39 @@ try:
         return texts
 
 
-    im, cbar = heatmap(F, list(range(n)), list(range(n)), ax=axs[1, 1], cmap="magma_r")
+    im, cbar = heatmap(F, list(range(n)), list(range(n)), ax=axs[1, 1], cmap='magma_r')
     texts = annotate_heatmap(im)
-    axs[1, 1].set(title="Создание аннотированных тепловых карт:", xlabel="Номер столбца", ylabel="Номер строки")
-    plt.suptitle("Использование библиотеки matplotlib")
+    axs[1, 1].set(title='Создание аннотированных тепловых карт:', xlabel='Номер столбца', ylabel='Номер строки')
+    plt.suptitle('Использование библиотеки matplotlib')
     plt.tight_layout()
     plt.show()
-
     # Использование библиотеки seaborn
     number_row = []
     for i in range(1, n + 1):
         number_row += [i] * n
     number_item = list(range(1, n + 1)) * n
-    df = pd.DataFrame({"Значения": F.flatten(), "Номер строки": number_row, "Номер элемента в строке": number_item})
+    df = pd.DataFrame({'Значения': F.flatten(), 'Номер строки': number_row, 'Номер элемента в строке': number_item})
     fig, axs = plt.subplots(2, 2, figsize=(16, 9))  # Задание поля для графиков
     # Обычный график
     plt.subplot(221)
-    plt.title("Использование функции lineplot")
-    sns.lineplot(x="Номер элемента в строке", y="Значения", hue="Номер строки", data=df, palette="Set2")
+    plt.title('Использование функции lineplot')
+    sns.lineplot(x='Номер элемента в строке', y='Значения', hue='Номер строки', data=df, palette='Set2')
     # Гистограмма
     plt.subplot(222)
-    plt.title("Использование функции boxplot")
-    sns.boxplot(x="Номер строки", y="Значения", palette="Set2", data=df)
+    plt.title('Использование функции boxplot')
+    sns.boxplot(x='Номер строки', y='Значения', palette='Set2', data=df)
     # Колебательная функция
     plt.subplot(223)
-    plt.title("Использование функции kdeplot")
-    sns.kdeplot(data=df, x="Номер элемента в строке", y="Значения", hue="Номер строки", palette="Set2")
+    plt.title('Использование функции kdeplot')
+    sns.kdeplot(data=df, x='Номер элемента в строке', y='Значения', hue='Номер строки', palette='Set2')
     # Тепловая карта
     plt.subplot(224)
-    plt.title("Использование функции heatmap")
-    sns.heatmap(data=F, annot=True, fmt="d", linewidths=.5)
-    plt.suptitle("Использование библиотеки seaborn")
+    plt.title('Использование функции heatmap')
+    sns.heatmap(data=F, annot=True, fmt='d', linewidths=.5)
+    plt.suptitle('Использование библиотеки seaborn')
     plt.tight_layout()
     plt.show()
 
     print('\nРабота программы завершена.')
-except ValueError:  # ошибка на случай введения не числа в качестве порядка или коэффициента
+except ValueError:  # Ошибка на случай введения не числа в качестве порядка или коэффициента.
     print('\nВведенный символ не является числом. Перезапустите программу и введите число.')
