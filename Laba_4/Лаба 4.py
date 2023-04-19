@@ -21,34 +21,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def heatmap(data, row_labels, col_labels, ax, cbar_kw=None, **kwargs):  # аннотированная тепловая карта
-    if cbar_kw is None:
-        cbar_kw = {}
-    im = ax.imshow(data, **kwargs)
-    cbar = ax.figure.colorbar(im, ax=ax, **cbar_kw)
-    ax.set_xticks(np.arange(data.shape[1]), labels=col_labels)
-    ax.set_yticks(np.arange(data.shape[0]), labels=row_labels)
-    return im, cbar
-
-
-def annotate_heatmap(im, data=None, textcolors=("black", "white"), threshold=0):
-    if not isinstance(data, (list, np.ndarray)):
-        data = im.get_array()
-    kw = dict(horizontalalignment="center", verticalalignment="center")
-    texts = []
-    for i in range(data.shape[0]):
-        for j in range(data.shape[1]):
-            kw.update(color=textcolors[int(data[i, j] > threshold)])
-            text = im.axes.text(j, i, data[i, j], **kw)
-            texts.append(text)
-    return texts
-
-
 try:
-    n = int(input('Введите число N: '))
-    k = int(input('Введите число K: '))
+    n = int(input('Введите число N > 4, являющееся размерностью матрицы "A": '))
+    k = int(input('Введите число K, являющееся коэффициентом умножения: '))
     while n < 5:
-        n = int(input('Введите число N больше 4: '))
+        n = int(input('Введите число N > 4: '))
 
     cnt_b2 = sum_ch4 = sum_det_F = 0
     middle_n = n // 2 + n % 2  # Середина матрицы
@@ -60,7 +37,7 @@ try:
     A_obr = np.linalg.inv(A)  # Обратная матрица А
     det_A = np.linalg.det(A)  # Определитель матрицы А
     F = A.copy()  # Задаём матрицу F
-    G = np.zeros((n, n))  # Заготовка матрицы G
+    G = np.tri(n) * A  # Матрица G
 
     print('\nМатрица А:')
     print(A)
@@ -153,7 +130,7 @@ try:
         try:
             F_obr = np.linalg.inv(F)  # Обратная матрица F
             KF_obr = F_obr * k  # K * F^-1
-            A_obrAT = np.matmul(A_obr, AT)  # A^-1 * AT
+            A_obrAT = A_obr * AT  # A^-1 * AT
             result = A_obrAT - KF_obr  # A^-1 * AT – K * F^-1
 
             print('\nОбратная матрица F:')
@@ -166,7 +143,8 @@ try:
             print(result)
         except np.linalg.LinAlgError:
             print("Одна из матриц является вырожденной (определитель равен 0),"
-                  " поэтому обратную матрицу найти невозможно.")
+                  " поэтому обратную матрицу найти невозможно. Перезапустите программу.")
+            quit()
     else:
         print(f'\nОпределитель матрицы А({int(det_A)})')
         print(f'меньше суммы диагональных элементов матрицы F({int(sum_det_F)}) или равен ей')
@@ -193,28 +171,54 @@ try:
         print(ATGFT)
         print('\nРезультат (AТ + G - FТ) * K:')
         print(result)
-
+    # Построение графиков
     av = [np.mean(abs(F[i, ::])) for i in range(n)]
-    av = int(sum(av))  # сумма средних значений строк (используется при создании третьего графика)
-    fig, axs = plt.subplots(2, 2, figsize=(11, 8))
+    av = int(sum(av))  # сумма средних значений строк (используется при создании кругового графика)
+    fig, axs = plt.subplots(2, 2, figsize=(16, 9))
     x = list(range(1, n + 1))
     for j in range(n):
-        y = list(F[j, ::])  # обычный график
+        y = list(F[j, ::])
+        # обычный график
         axs[0, 0].plot(x, y, ',-', label=f"{j + 1} строка.")
         axs[0, 0].set(title="График с использованием функции plot:", xlabel='Номер элемента в строке',
                       ylabel='Значение элемента')
         axs[0, 0].grid()
-        axs[0, 1].bar(x, y, 0.4, label=f"{j + 1} строка.")  # гистограмма
-        axs[0, 1].set(title="График с использованием функции bar:", xlabel='Номер элемента в строке',
+        # гистограмма
+        axs[1, 0].bar(x, y, 0.4, label=f"{j + 1} строка.")
+        axs[1, 0].set(title="График с использованием функции bar:", xlabel='Номер элемента в строке',
                       ylabel='Значение элемента')
         if n <= 10:
-            axs[0, 1].legend(loc='lower right')
-            axs[0, 1].legend(loc='lower right')
-    explode = [0] * (n - 1)  # отношение средних значений от каждой строки
-    explode.append(0.1)
+            axs[1, 0].legend(loc='lower right')
+            axs[1, 0].legend(loc='lower right')
+    # Круговой график
+    explode = [0.05, 0.07, 0.09, 0.1, 0.15]
     sizes = [round(np.mean(abs(F[i, ::])) * 100 / av, 1) for i in range(n)]
-    axs[1, 0].set_title("График с использованием функции pie:")
-    axs[1, 0].pie(sizes, labels=list(range(1, n + 1)), explode=explode, autopct='%1.1f%%', shadow=True)
+    axs[0, 1].set_title("График с использованием функции pie:")
+    axs[0, 1].pie(sizes, labels=list(range(1, n + 1)), explode=explode, autopct='%1.1f%%', shadow=True)
+
+    # Тепловая карта
+    def heatmap(data, row_labels, col_labels, ax, cbar_kw=None, **kwargs):  # аннотированная тепловая карта
+        if cbar_kw is None:
+            cbar_kw = {}
+        im = ax.imshow(data, **kwargs)
+        cbar = ax.figure.colorbar(im, ax=ax, **cbar_kw)
+        ax.set_xticks(np.arange(data.shape[1]), labels=col_labels)
+        ax.set_yticks(np.arange(data.shape[0]), labels=row_labels)
+        return im, cbar
+
+
+    def annotate_heatmap(im, data=None, textcolors=("black", "white"), threshold=0):
+        if not isinstance(data, (list, np.ndarray)):
+            data = im.get_array()
+        kw = dict(horizontalalignment="center", verticalalignment="center")
+        texts = []
+        for i in range(data.shape[0]):
+            for j in range(data.shape[1]):
+                kw.update(color=textcolors[int(data[i, j] > threshold)])
+                text = im.axes.text(j, i, data[i, j], **kw)
+                texts.append(text)
+        return texts
+
 
     im, cbar = heatmap(F, list(range(n)), list(range(n)), ax=axs[1, 1], cmap="magma_r")
     texts = annotate_heatmap(im)
