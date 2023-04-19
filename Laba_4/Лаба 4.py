@@ -16,8 +16,9 @@ D	Е
 выражение (AТ + G - FТ) * K, где G-нижняя треугольная матрица, полученная из А. Выводятся по мере формирования А,
 F и все матричные операции последовательно. """
 
-import random as r
 import numpy as np
+import pandas as pd
+import seaborn as sns
 from matplotlib import pyplot as plt
 
 
@@ -29,20 +30,15 @@ try:
 
     cnt_b2 = sum_ch4 = sum_det_F = 0
     middle_n = n // 2 + n % 2  # Середина матрицы
-    A = np.zeros((n, n))  # Задаём матрицу A
-    for i in range(n):
-        for j in range(n):
-            A[i][j] = r.randint(-10, 10)
+    A = np.random.randint(-10.0, 10.0, (n, n))
     AT = np.transpose(A)  # Транспонированная матрица А
     A_obr = np.linalg.inv(A)  # Обратная матрица А
     det_A = np.linalg.det(A)  # Определитель матрицы А
     F = A.copy()  # Задаём матрицу F
     G = np.tri(n) * A  # Матрица G
 
-    print('\nМатрица А:')
-    print(A)
-    print('\nТранспонированная А:')
-    print(AT)
+    print(f'\nМатрица А:\n{A}')
+    print(f'\nТранспонированная А:\n{AT}')
 
     # Выделяем матрицы E C B
     if n % 2 == 1:
@@ -112,8 +108,7 @@ try:
                 for j in range(middle_n, n):
                     F[i][j] = E[i][j - middle_n]  # Перезаписываем Е
 
-    print('\nМатрица F:')
-    print(F)
+    print(f'\nМатрица F:\n{F}')
     # Сумма диагональных элементов матрицы F
     for i in range(n):
         for j in range(n):
@@ -133,14 +128,10 @@ try:
             A_obrAT = A_obr * AT  # A^-1 * AT
             result = A_obrAT - KF_obr  # A^-1 * AT – K * F^-1
 
-            print('\nОбратная матрица F:')
-            print(F_obr)
-            print('\nРезультат K * F^-1:')
-            print(KF_obr)
-            print("\nРезультат A_obr * AT:")
-            print(A_obrAT)
-            print('\nРезультат (К * F) * А – K * AT:')
-            print(result)
+            print(f'\nОбратная матрица F:\n{F_obr}')
+            print(f'\nРезультат K * F^-1:\n{KF_obr}')
+            print(f'\nРезультат A_obr * AT:\n{A_obrAT}')
+            print(f'\nРезультат (К * F) * А – K * AT:\n{result}')
         except np.linalg.LinAlgError:
             print("Одна из матриц является вырожденной (определитель равен 0),"
                   " поэтому обратную матрицу найти невозможно. Перезапустите программу.")
@@ -161,29 +152,24 @@ try:
         ATGFT = ATG - FT  # AT + G - FT
         result = ATGFT * k  # (AТ + G - FТ) * K
 
-        print('\nТранспонированная матрица F:')
-        print(FT)
-        print('\nМатрица G:')
-        print(G)
-        print('\nРезультат AТ + G:')
-        print(ATG)
-        print('\nРезультат AТ + G - FT:')
-        print(ATGFT)
-        print('\nРезультат (AТ + G - FТ) * K:')
-        print(result)
+        print(f'\nТранспонированная матрица F:\n{FT}')
+        print(f'\nМатрица G:\n{G}')
+        print(f'\nРезультат AТ + G:\n{ATG}')
+        print(f'\nРезультат AТ + G - FT:\n{ATGFT}')
+        print(f'\nРезультат (AТ + G - FТ) * K:\n{result}')
     # Построение графиков
     av = [np.mean(abs(F[i, ::])) for i in range(n)]
-    av = int(sum(av))  # сумма средних значений строк (используется при создании кругового графика)
-    fig, axs = plt.subplots(2, 2, figsize=(16, 9))
+    av = int(sum(av))  # Сумма средних значений строк (используется при создании кругового графика)
+    fig, axs = plt.subplots(2, 2, figsize=(16, 9))  # Задание поля для графиков
     x = list(range(1, n + 1))
     for j in range(n):
         y = list(F[j, ::])
-        # обычный график
+        # Обычный график
         axs[0, 0].plot(x, y, ',-', label=f"{j + 1} строка.")
         axs[0, 0].set(title="График с использованием функции plot:", xlabel='Номер элемента в строке',
                       ylabel='Значение элемента')
         axs[0, 0].grid()
-        # гистограмма
+        # Гистограмма
         axs[1, 0].bar(x, y, 0.4, label=f"{j + 1} строка.")
         axs[1, 0].set(title="График с использованием функции bar:", xlabel='Номер элемента в строке',
                       ylabel='Значение элемента')
@@ -224,6 +210,33 @@ try:
     texts = annotate_heatmap(im)
     axs[1, 1].set(title="Создание аннотированных тепловых карт:", xlabel="Номер столбца", ylabel="Номер строки")
     plt.suptitle("Использование библиотеки matplotlib")
+    plt.tight_layout()
+    plt.show()
+
+    # Использование библиотеки seaborn
+    number_row = []
+    for i in range(1, n + 1):
+        number_row += [i] * n
+    number_item = list(range(1, n + 1)) * n
+    df = pd.DataFrame({"Значения": F.flatten(), "Номер строки": number_row, "Номер элемента в строке": number_item})
+    fig, axs = plt.subplots(2, 2, figsize=(16, 9))  # Задание поля для графиков
+    # Обычный график
+    plt.subplot(221)
+    plt.title("Использование функции lineplot")
+    sns.lineplot(x="Номер элемента в строке", y="Значения", hue="Номер строки", data=df, palette="Set2")
+    # Гистограмма
+    plt.subplot(222)
+    plt.title("Использование функции boxplot")
+    sns.boxplot(x="Номер строки", y="Значения", palette="Set2", data=df)
+    # Колебательная функция
+    plt.subplot(223)
+    plt.title("Использование функции kdeplot")
+    sns.kdeplot(data=df, x="Номер элемента в строке", y="Значения", hue="Номер строки", palette="Set2")
+    # Тепловая карта
+    plt.subplot(224)
+    plt.title("Использование функции heatmap")
+    sns.heatmap(data=F, annot=True, fmt="d", linewidths=.5)
+    plt.suptitle("Использование библиотеки seaborn")
     plt.tight_layout()
     plt.show()
 
