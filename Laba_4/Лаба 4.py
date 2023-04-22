@@ -177,7 +177,10 @@ try:
             axs[1, 0].legend(loc='lower right')
             axs[1, 0].legend(loc='lower right')
     # Круговой график
-    explode = [0.05, 0.07, 0.09, 0.1, 0.15]
+    explode = [0.03]
+    for i in range(n-1):
+        s = explode[0] + 0.02 * i
+        explode.append(s)
     sizes = [round(np.mean(abs(F[i, ::])) * 100 / av, 1) for i in range(n)]
     axs[0, 1].set_title('График с использованием функции pie:')
     axs[0, 1].pie(sizes, labels=list(range(1, n + 1)), explode=explode, autopct='%1.1f%%', shadow=True)
