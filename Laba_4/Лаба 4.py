@@ -143,11 +143,6 @@ try:
 
         FT = np.transpose(F)  # Транспонированная матрица F
 
-        for i in range(n):
-            for j in range(n):
-                if i >= j and (i + j + 1) >= n:
-                    G[i][j] = A[i][j]
-
         ATG = AT + G  # AТ + G
         ATGFT = ATG - FT  # AT + G - FT
         result = ATGFT * k  # (AТ + G - FТ) * K
