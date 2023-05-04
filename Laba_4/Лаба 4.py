@@ -23,10 +23,10 @@ from matplotlib import pyplot as plt
 
 
 try:
-    n = int(input('Введите число N > 4, являющееся размерностью матрицы "A": '))
+    n = int(input('Введите число N > 5, являющееся размерностью матрицы "A": '))
+    while n < 6:
+        n = int(input('Введите число N > 5: '))
     k = int(input('Введите число K, являющееся коэффициентом умножения: '))
-    while n < 5:
-        n = int(input('Введите число N > 4: '))
 
     cnt_b2 = sum_ch4 = sum_det_F = 0
     middle_n = n // 2 + n % 2  # Середина матрицы
