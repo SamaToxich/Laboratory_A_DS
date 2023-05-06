@@ -17,7 +17,7 @@ import random as r
 def parameters(x):
     global mp
     a, b = x
-    a1, b1 = r.randint(0, 10), r.randint(0, 10)
+    a1, b1 = r.randint(1, 10), r.randint(1, 10)
     mp[a, b] = participants_parameters[a], participants_parameters[b]
     rating.append(a1 + b1)
 
@@ -57,9 +57,9 @@ try:
 
         # Заготовки для таблицы
         table = []
-        a = '¯' * 69
-        b = '_' * 69
-        c = '-' * 69
+        a = '¯' * 73
+        b = '_' * 73
+        c = '-' * 73
         # Разделение списка на составляющие
         for i, n in enumerate(mp.items()):
             p1, p2 = (str(n[0])[1:-1]).split(', ')
@@ -68,17 +68,17 @@ try:
         # Вывод таблицы
         print('Составы команд:')
         print(f'|{a}|')
-        print('|{:^11}|{:^11}|{:^11}|{:^10}|{:^10}|{:^9}|'.format('№ команды', 'Игрок № 1', 'Игрок № 2', 'Возраст № 1',
+        print('|{:^11}|{:^11}|{:^11}|{:^13}|{:^13}|{:^9}|'.format('№ команды', 'Игрок № 1', 'Игрок № 2', 'Возраст № 1',
                                                                   'Возраст № 2', 'Рейтинг'))
         print(f'|{c}|')
         for value in table:
-            print('|{:^11}|{:^11}|{:^11}|{:^12}|{:^12}|{:^7}|'.format(value[0], value[1], value[2], value[3], value[4],
+            print('|{:^11}|{:^11}|{:^11}|{:^13}|{:^13}|{:^9}|'.format(value[0], value[1], value[2], value[3], value[4],
                                                                       value[5]))
         print(f'|{b}|')
 
-        a = '¯' * 58
-        b = '_' * 58
-        c = '-' * 58
+        a = '¯' * 61
+        b = '_' * 61
+        c = '-' * 61
 
         key = list(mp.items())[rating.index(max(rating))]
         p1, p2 = (str(key[0])[1:-1]).split(', ')
@@ -86,10 +86,10 @@ try:
 
         print('\nКоманда с наивысшим рейтингом:')
         print(f'|{a}|')
-        print('|{:^11}|{:^11}|{:^12}|{:^10}|{:^9}|'.format('Игрок № 1', 'Игрок № 2', 'Возраст № 1',
+        print('|{:^11}|{:^11}|{:^13}|{:^13}|{:^9}|'.format('Игрок № 1', 'Игрок № 2', 'Возраст № 1',
                                                            'Возраст № 2', 'Рейтинг'))
         print(f'|{c}|')
-        print('|{:^11}|{:^11}|{:^12}|{:^11}|{:^9}|'.format(p1, p2, r1, r2, max(rating)))
+        print('|{:^11}|{:^11}|{:^13}|{:^13}|{:^9}|'.format(p1, p2, r1, r2, max(rating)))
         print(f'|{b}|')
 
     print('\nРабота программы завершена успешно.')
