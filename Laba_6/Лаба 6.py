@@ -4,53 +4,81 @@
 на характеристики объектов и целевую функцию для оптимизации решения.
 
 Вариант 9:
-В команду для участия в турнире по теннису в смешанном разряде подали заявку 3 женщины и 5 мужчин.
-Вывести все возможные варианты состава команды.
-"""
+На турнир по теннису в смешанном разряде подали заявку несколько игроков.
+Вывести все возможные варианты состава команды."""
 
 import itertools
 import random as r
 
 
+def players(x):
+    global player, player_parameters
+    cntplayers = 1
+    string = ''
+
+    for _ in range(x):
+        player.append(f'{r.choice("МЖ")}{cntplayers}')
+        cntplayers += 1
+
+    for j in player:
+        player_parameters[j] = r.randint(18, 35)
+
+    for i in player_parameters.items():
+        a, b = i
+        string = f'{string}, {a} {b}'
+
+    print('\nИгроки в турнире:')
+    print(string[2::])
+
+
 def parameters(x):
     global mp
     a, b = x
-    a1, b1 = r.randint(1, 10), r.randint(1, 10)
-    mp[a, b] = participants_parameters[a], participants_parameters[b]
+    a1, b1 = r.randint(1, 50), r.randint(1, 50)
+    mp[a, b] = player_parameters[a], player_parameters[b]
     rating.append(a1 + b1)
 
 
 m = []
 mp = {}
 rating = []
-participants = ['Ж1', 'Ж2', 'Ж3', 'М1', 'М2', 'М3', 'М4', 'М5']
-participants_parameters = {'Ж1': 19, 'Ж2': 27, 'Ж3': 35, 'М1': 24, 'М2': 38, 'М3': 21, 'М4': 18, 'М5': 43}
+player = []
+player_parameters = {}
 
 try:
     a = int(input('Запустить обычную версию программы или усложнённую? ( Обычную = 0 | Усложнённую = 1 ): '))
     while a != 0 and a != 1:
         a = int(input('Принимаются только значения "0" и "1": '))
+
+    b = int(input('Введите кол-во игроков в турнире: '))
+    while b < 2:
+        b = int(input('Введите кол-во игроков в турнире (минимум два игрока): '))
+
+    players(b)
+
     # Первая часть задания
     if a == 0:
-        for i in itertools.combinations(participants, 2):
+        for i in itertools.combinations(player, 2):
             m.append(i)
 
         print('\nСоставы команд:')
+        cnt = 0
         for i in m:
-            print(' Игрок № 1: {}, Игрок № 2: {} '.format(*i))
+            cnt += 1
+            print('Команда {}: {}, {}'.format(cnt, *i))
     # Вторая часть задания
     else:
         print('\nДополнительным условием будет ограничение по возрасту.\nЛюди у которых возраст превышает 30 лет не'
-              'допускаются к участию в соревновании.\nНужно вывести составы команд и их параметры и команду с'
+              'допускаются к участию в соревновании.\nНужно вывести составы команд, их параметры и команду с'
               ' наибольшим суммарным рейтингом игроков.\n')
         y = 0
-        for i, n in enumerate(participants_parameters.items()):
+        for i, n in enumerate(player_parameters.items()):
             a, b = n
             if int(b) > 30:
                 i -= y
                 y += 1
-                participants.pop(i)
-        for i in itertools.combinations(participants, 2):
+                player.pop(i)
+        for i in itertools.combinations(player, 2):
             parameters(i)
         # Заготовки для таблицы
         table = []
