@@ -125,6 +125,7 @@ class selection:
 
         self.scrollbar = Scrollbar(self.purchases_window, command=self.purchases_list.yview)
         self.scrollbar.pack(side='right', fill='y')
+        self.purchases_list.config(yscrollcommand=self.scrollbar.set)
 
 
 root = Tk()
