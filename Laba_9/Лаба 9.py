@@ -1,6 +1,4 @@
 import os
-import random
-import time
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -43,18 +41,18 @@ class game:
         self.txtl = Label(text='Логин', font='Arial 30 bold')
         self.txtp = Label(text='Пароль', font='Arial 30 bold')
         self.txt = Label(text='Для игры введите ваш логин и пароль', font='Arial 36 bold')
-        self.blur = ttk.Button(text='🫣', style='my1.TButton', command=lambda: self.bluring(self.password, self.blur))
+        self.blur = ttk.Button(text='😌', style='my1.TButton', command=lambda: self.bluring(self.password, self.blur))
         self.button_reg = ttk.Button(text='Зарегистрироваться', style='my.TButton', command=lambda: self.regist())
         self.button_avt = ttk.Button(text='Авторизоваться', style='my.TButton', command=lambda: self.authorization())
 
-        self.txt.place(x=90, y=40)
-        self.txtl.place(x=330, y=170)
-        self.txtp.place(x=330, y=260)
-        self.login.place(x=510, y=175, height=40)
-        self.password.place(x=510, y=265, height=40)
-        self.blur.place(x=774, y=265, width=42, height=42)
-        self.button_avt.place(x=260, y=380)
-        self.button_reg.place(x=540, y=380)
+        self.txt.place(x=90, y=50)
+        self.txtl.place(x=300, y=180)
+        self.txtp.place(x=300, y=270)
+        self.login.place(x=480, y=185, height=40)
+        self.password.place(x=480, y=275, height=40)
+        self.blur.place(x=744, y=275, width=42, height=42)
+        self.button_avt.place(x=260, y=390)
+        self.button_reg.place(x=530, y=390)
 
     def bluring(self, pas, but):
         if self.count % 2 == 0:
@@ -62,7 +60,7 @@ class game:
             but.config(text='🧐')
         else:
             pas.config(show='*')
-            but.config(text='🫣')
+            but.config(text='😌')
         self.count += 1
 
     def authorization(self):
@@ -97,9 +95,9 @@ class game:
                 for widget in self.main.winfo_children():
                     widget.destroy()
 
-                Label(self.main, text=f'Вы успешно авторизовались!', font='Arial 36 bold').place(x=210, y=160)
+                Label(self.main, text=f'Вы успешно авторизовались!', font='Arial 36 bold').place(x=175, y=160)
                 button = ttk.Button(self.main, text='Играть', style='my.TButton', command=lambda: self.games())
-                button.place(x=460, y=340)
+                button.place(x=440, y=340)
 
             elif not f_p:
                 messagebox.showwarning(title='Ошибка', message='Неверный пароль')
@@ -115,20 +113,20 @@ class game:
         win.grab_set()
 
         login = ttk.Entry(win, width=20, justify='center', font='Arial 20 bold')
-        password = ttk.Entry(win, width=20, justify='center',font='Arial 20 bold', show='*')
+        password = ttk.Entry(win, width=20, justify='center', font='Arial 20 bold', show='*')
         txtl = Label(win, text='Логин', font='Arial 30 bold')
         txtp = Label(win, text='Пароль', font='Arial 30 bold')
         txt = Label(win, text='Введите желаемые логин и пароль', font='Arial 36 bold')
-        blur = ttk.Button(win, text='🫣', style='my1.TButton', command=lambda: self.bluring(password, blur))
+        blur = ttk.Button(win, text='😌', style='my1.TButton', command=lambda: self.bluring(password, blur))
         button_reg = ttk.Button(win, text='Зарегистрироваться', style='my.TButton', command=lambda: registrate())
 
-        txt.place(x=120, y=40)
-        txtl.place(x=300, y=170)
-        txtp.place(x=300, y=260)
-        login.place(x=470, y=175, height=40)
-        password.place(x=470, y=265, height=40)
-        blur.place(x=735, y=265, width=42, height=42)
-        button_reg.place(x=405, y=380)
+        txt.place(x=120, y=50)
+        txtl.place(x=300, y=180)
+        txtp.place(x=300, y=270)
+        login.place(x=470, y=185, height=40)
+        password.place(x=470, y=275, height=40)
+        blur.place(x=735, y=275, width=42, height=42)
+        button_reg.place(x=405, y=390)
 
         def registrate():
             s_l = login.get()
