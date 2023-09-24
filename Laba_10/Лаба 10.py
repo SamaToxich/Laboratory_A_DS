@@ -32,29 +32,36 @@ class game:
         s = ttk.Style()
         s.configure('my.TButton', font='Arial 20 bold')
         a = ttk.Style()
-        a.configure('my1.TButton', font='Arial 22')
+        a.configure('my1.TButton', font='Arial 21')
 
         self.count = 0
+        self.turn = None
+        self.flag = None
+        self.free = None
         self.main = main
         self.account = {}
+        self.moves = None
+        self.buttons = None
+        self.next_move = None
         self.first_click = True
+        self.gamers_first = None
         self.login = ttk.Entry(width=20, justify='center', font='Arial 20 bold')
         self.password = ttk.Entry(width=20, justify='center', font='Arial 20 bold', show='*')
         self.txtl = Label(text='Логин', font='Arial 30 bold')
         self.txtp = Label(text='Пароль', font='Arial 30 bold')
         self.txt = Label(text='Для игры введите ваш логин и пароль', font='Arial 36 bold')
-        self.blur = ttk.Button(text='🫣', style='my1.TButton', command=lambda: self.bluring(self.password, self.blur))
+        self.blur = ttk.Button(text='😌', style='my1.TButton', command=lambda: self.bluring(self.password, self.blur))
         self.button_reg = ttk.Button(text='Зарегистрироваться', style='my.TButton', command=lambda: self.regist())
         self.button_avt = ttk.Button(text='Авторизоваться', style='my.TButton', command=lambda: self.authorization())
 
-        self.txt.place(x=90, y=40)
-        self.txtl.place(x=330, y=170)
-        self.txtp.place(x=330, y=260)
-        self.login.place(x=510, y=175, height=40)
-        self.password.place(x=510, y=265, height=40)
-        self.blur.place(x=774, y=265, width=42, height=42)
-        self.button_avt.place(x=260, y=380)
-        self.button_reg.place(x=540, y=380)
+        self.txt.place(x=90, y=50)
+        self.txtl.place(x=300, y=180)
+        self.txtp.place(x=300, y=270)
+        self.login.place(x=480, y=185, height=40)
+        self.password.place(x=480, y=275, height=40)
+        self.blur.place(x=744, y=275, width=42, height=42)
+        self.button_avt.place(x=260, y=390)
+        self.button_reg.place(x=530, y=390)
 
     def bluring(self, pas, but):
         if self.count % 2 == 0:
@@ -62,7 +69,7 @@ class game:
             but.config(text='🧐')
         else:
             pas.config(show='*')
-            but.config(text='🫣')
+            but.config(text='😌')
         self.count += 1
 
     def authorization(self):
@@ -97,9 +104,9 @@ class game:
                 for widget in self.main.winfo_children():
                     widget.destroy()
 
-                Label(self.main, text=f'Вы успешно авторизовались!', font='Arial 36 bold').place(x=210, y=160)
+                Label(self.main, text=f'Вы успешно авторизовались!', font='Arial 36 bold').place(x=175, y=160)
                 button = ttk.Button(self.main, text='Играть', style='my.TButton', command=lambda: self.games())
-                button.place(x=460, y=340)
+                button.place(x=440, y=340)
 
             elif not f_p:
                 messagebox.showwarning(title='Ошибка', message='Неверный пароль')
@@ -115,20 +122,20 @@ class game:
         win.grab_set()
 
         login = ttk.Entry(win, width=20, justify='center', font='Arial 20 bold')
-        password = ttk.Entry(win, width=20, justify='center',font='Arial 20 bold', show='*')
+        password = ttk.Entry(win, width=20, justify='center', font='Arial 20 bold', show='*')
         txtl = Label(win, text='Логин', font='Arial 30 bold')
         txtp = Label(win, text='Пароль', font='Arial 30 bold')
         txt = Label(win, text='Введите желаемые логин и пароль', font='Arial 36 bold')
-        blur = ttk.Button(win, text='🫣', style='my1.TButton', command=lambda: self.bluring(password, blur))
+        blur = ttk.Button(win, text='😌', style='my1.TButton', command=lambda: self.bluring(password, blur))
         button_reg = ttk.Button(win, text='Зарегистрироваться', style='my.TButton', command=lambda: registrate())
 
-        txt.place(x=120, y=40)
-        txtl.place(x=300, y=170)
-        txtp.place(x=300, y=260)
-        login.place(x=470, y=175, height=40)
-        password.place(x=470, y=265, height=40)
-        blur.place(x=735, y=265, width=42, height=42)
-        button_reg.place(x=405, y=380)
+        txt.place(x=120, y=50)
+        txtl.place(x=300, y=180)
+        txtp.place(x=300, y=270)
+        login.place(x=470, y=185, height=40)
+        password.place(x=470, y=275, height=40)
+        blur.place(x=735, y=275, width=42, height=42)
+        button_reg.place(x=405, y=390)
 
         def registrate():
             s_l = login.get()
@@ -190,7 +197,8 @@ class game:
         button_first.place(x=200, y=220)
         button_after.place(x=440, y=220)
 
-        self.buttons = [Button(self.main, width=3, height=1, font='Arial 110 bold', command=lambda x=i: push(x)) for i in range(9)]
+        self.buttons = [Button(self.main, width=3, height=1, font='Arial 110 bold',
+                               command=lambda x=i: push(x)) for i in range(9)]
 
         def choice(gamer):
             if gamer == '1':
@@ -222,24 +230,27 @@ class game:
             if result == 'Победа':
                 Label(window, text='Вы выиграли', font='Arial 30 bold').place(x=160, y=110)
                 ttk.Button(window, text='Сброс', style='my.TButton', command=lambda: self.games()).place(x=205,
-                                                                                                            y=215)
+                                                                                                         y=215)
             elif result == 'Проигрыш':
                 Label(window, text='Вы проиграли', font='Arial 30 bold').place(x=160, y=110)
                 ttk.Button(window, text='Сброс', style='my.TButton', command=lambda: self.games()).place(x=205,
-                                                                                                            y=215)
+                                                                                                         y=215)
             else:
                 Label(window, text='Ничья', font='Arial 30 bold').place(x=230, y=90)
                 ttk.Button(window, text='Сброс', style='my.TButton', command=lambda: self.games()).place(x=210,
-                                                                                                            y=215)
+                                                                                                         y=215)
 
         def motion(x, number):
             Flag = True
             next_move = -1
             # Строки
             for i in range(0, 9, 3):
-                if self.moves[i] == x and self.moves[i + 1] == x and self.moves[i + 2] is None: next_move = i + 2
-                elif self.moves[i] == x and self.moves[i + 2] == x and self.moves[i + 1] is None: next_move = i + 1
-                elif self.moves[i + 1] == x and self.moves[i + 2] == x and self.moves[i] is None: next_move = i
+                if self.moves[i] == x and self.moves[i + 1] == x and self.moves[i + 2] is None:
+                    next_move = i + 2
+                elif self.moves[i] == x and self.moves[i + 2] == x and self.moves[i + 1] is None:
+                    next_move = i + 1
+                elif self.moves[i + 1] == x and self.moves[i + 2] == x and self.moves[i] is None:
+                    next_move = i
             # Столбцы
             for i in range(3):
                 if self.moves[i] == x and self.moves[i + 3] == x and self.moves[i + 6] is None: next_move = i + 6
@@ -298,8 +309,8 @@ class game:
             # Второй ход
             elif self.turn == 2:
                 if self.gamers_first and self.moves[4] != 'X':
-                    s = [i for i in range(9) if self.moves[i] == 'X']
-                    if abs(s[0] - s[1]) == 8 or abs(s[0] - s[1]) == 4:
+                    Corners = [i for i in range(9) if self.moves[i] == 'X']
+                    if abs(Corners[0] - Corners[1]) == 8 or abs(Corners[0] - Corners[1]) == 4:
                         self.next_move = random.choice((1, 3, 5, 7))
                     else:
                         next_step(number)
