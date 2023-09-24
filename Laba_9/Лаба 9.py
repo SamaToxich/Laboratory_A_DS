@@ -1,7 +1,9 @@
 import os
+import random
+import time
 from tkinter import *
-from tkinter import ttk
 from tkinter import messagebox
+from tkinter import ttk
 
 
 def dismiss(win):
@@ -9,26 +11,59 @@ def dismiss(win):
     win.destroy()
 
 
+def openfile():
+    try:
+        text = open(r'C:\py\test.txt', 'r+')
+        return text
+    except FileNotFoundError:
+        try:
+            os.mkdir(r'C:\py')
+            text = open(r'C:\py\test.txt', 'w')
+            text.close()
+            text = open(r'C:\py\test.txt', 'r+')
+            return text
+        except FileNotFoundError:
+            text = open(r'C:\py\test.txt', 'r+')
+            return text
+
+
 class game:
     def __init__(self, main):
-        self.account = {}
-        self.main = main
-        self.first_click = True
-        self.login = ttk.Entry(width=30, justify='center')
-        self.password = ttk.Entry(width=30, justify='center')
-        self.txtl = Label(text='Логин', font='Arial 14 bold')
-        self.txtp = Label(text='Пароль', font='Arial 14 bold')
-        self.button_reg = ttk.Button(text='Зарегистрироваться', command=lambda: self.regist())
-        self.txt = Label(text='Для игры введите ваш логин и пароль', font='Arial 14 bold')
-        self.button_avt = ttk.Button(text='Авторизоваться', command=lambda: self.authorization())
+        s = ttk.Style()
+        s.configure('my.TButton', font='Arial 20 bold')
+        a = ttk.Style()
+        a.configure('my1.TButton', font='Arial 22')
 
-        self.txt.place(x=180, y=70)
-        self.txtl.place(x=230, y=120)
-        self.txtp.place(x=230, y=150)
-        self.login.place(x=310, y=123)
-        self.password.place(x=310, y=153)
-        self.button_avt.place(x=260, y=210)
-        self.button_reg.place(x=360, y=210)
+        self.count = 0
+        self.main = main
+        self.account = {}
+        self.first_click = True
+        self.login = ttk.Entry(width=20, justify='center', font='Arial 20 bold')
+        self.password = ttk.Entry(width=20, justify='center', font='Arial 20 bold', show='*')
+        self.txtl = Label(text='Логин', font='Arial 30 bold')
+        self.txtp = Label(text='Пароль', font='Arial 30 bold')
+        self.txt = Label(text='Для игры введите ваш логин и пароль', font='Arial 36 bold')
+        self.blur = ttk.Button(text='🫣', style='my1.TButton', command=lambda: self.bluring(self.password, self.blur))
+        self.button_reg = ttk.Button(text='Зарегистрироваться', style='my.TButton', command=lambda: self.regist())
+        self.button_avt = ttk.Button(text='Авторизоваться', style='my.TButton', command=lambda: self.authorization())
+
+        self.txt.place(x=90, y=40)
+        self.txtl.place(x=330, y=170)
+        self.txtp.place(x=330, y=260)
+        self.login.place(x=510, y=175, height=40)
+        self.password.place(x=510, y=265, height=40)
+        self.blur.place(x=774, y=265, width=42, height=42)
+        self.button_avt.place(x=260, y=380)
+        self.button_reg.place(x=540, y=380)
+
+    def bluring(self, pas, but):
+        if self.count % 2 == 0:
+            pas.config(show='')
+            but.config(text='🧐')
+        else:
+            pas.config(show='*')
+            but.config(text='🫣')
+        self.count += 1
 
     def authorization(self):
         s_l = self.login.get()
@@ -38,7 +73,7 @@ class game:
             messagebox.showwarning(title='Ошибка', message='Поле заполнения пусто')
 
         else:
-            file = open('test.txt', 'r+')
+            file = openfile()
             a = file.readline()[:-1].split(' ')
 
             while True:
@@ -59,30 +94,42 @@ class game:
                     f_p = False
 
             if f_reg:
-                win = Toplevel()
-                win.geometry('400x100+760+420')
-                win.title('Успех')
-                win.grab_set()
-                win.protocol('WM_DELETE_WINDOW', lambda: dismiss(win))
-                win.after(3000, lambda: (win.destroy(), win.grab_release()))
+                for widget in self.main.winfo_children():
+                    widget.destroy()
 
-                Label(win, text=f'Вы успешно авторизовались', font='Arial 14 bold').place(x=60, y=30)
+                Label(self.main, text=f'Вы успешно авторизовались!', font='Arial 36 bold').place(x=210, y=160)
+                button = ttk.Button(self.main, text='Играть', style='my.TButton', command=lambda: self.games())
+                button.place(x=460, y=340)
 
-                self.txt.place_forget()
-                self.txtl.place_forget()
-                self.txtp.place_forget()
-                self.login.place_forget()
-                self.password.place_forget()
-                self.button_avt.place_forget()
-                self.button_reg.place_forget()
-
-                Label(self.main, text=f'"Игра"', font='Arial 14 bold').place(x=330, y=120)
             elif not f_p:
                 messagebox.showwarning(title='Ошибка', message='Неверный пароль')
             else:
                 messagebox.showwarning(title='Ошибка', message='Такого аккаунта не существует')
 
     def regist(self):
+        win = Toplevel()
+        win.geometry('1080x520+430+250')
+        win.title('Регистрация')
+        win.resizable(False, False)
+        win.protocol('WM_DELETE_WINDOW', lambda: dismiss(win))
+        win.grab_set()
+
+        login = ttk.Entry(win, width=20, justify='center', font='Arial 20 bold')
+        password = ttk.Entry(win, width=20, justify='center',font='Arial 20 bold', show='*')
+        txtl = Label(win, text='Логин', font='Arial 30 bold')
+        txtp = Label(win, text='Пароль', font='Arial 30 bold')
+        txt = Label(win, text='Введите желаемые логин и пароль', font='Arial 36 bold')
+        blur = ttk.Button(win, text='🫣', style='my1.TButton', command=lambda: self.bluring(password, blur))
+        button_reg = ttk.Button(win, text='Зарегистрироваться', style='my.TButton', command=lambda: registrate())
+
+        txt.place(x=120, y=40)
+        txtl.place(x=300, y=170)
+        txtp.place(x=300, y=260)
+        login.place(x=470, y=175, height=40)
+        password.place(x=470, y=265, height=40)
+        blur.place(x=735, y=265, width=42, height=42)
+        button_reg.place(x=405, y=380)
+
         def registrate():
             s_l = login.get()
             s_p = password.get()
@@ -90,7 +137,7 @@ class game:
             if len(s_l) == 0 or len(s_p) == 0:
                 messagebox.showwarning(title='Ошибка', message='Поле заполнения пусто')
             else:
-                file = open('test.txt', 'r+')
+                file = openfile()
                 a = file.readline()[:-1].split(' ')
 
                 while True:
@@ -108,48 +155,28 @@ class game:
                         f_reg = True
 
                 if not f_reg:
-                    file = open('test.txt', 'r+')
+                    file = openfile()
                     file.seek(0, os.SEEK_END)
                     file.write(f'{s_l} {s_p}\n')
                     file.close()
 
-                    txt.place_forget()
-                    txtl.place_forget()
-                    txtp.place_forget()
-                    login.place_forget()
-                    password.place_forget()
-                    button_reg.place_forget()
+                    for widget in win.winfo_children():
+                        widget.destroy()
 
-                    Label(win, text='Вы успешно зарегистрировались', font='Arial 14 bold').place(x=140, y=120)
-                    win.after(3000, lambda: (win.destroy(), win.grab_release()))
+                    Label(win, text='Вы успешно зарегистрировались', font='Arial 36 bold').place(x=140, y=200)
+                    win.after(2000, lambda: (win.destroy(), win.grab_release()))
                 else:
                     messagebox.showwarning(title='Ошибка', message='Такой аккаунт уже существует')
 
-        win = Toplevel()
-        win.geometry('600x300+660+320')
-        win.title('Регистрация')
-        win.resizable(False, False)
-        win.protocol('WM_DELETE_WINDOW', lambda: dismiss(win))
-        win.grab_set()
-
-        login = ttk.Entry(win, width=30, justify='center')
-        password = ttk.Entry(win, width=30, justify='center')
-        txtl = Label(win, text='Логин', font='Arial 14 bold')
-        txtp = Label(win, text='Пароль', font='Arial 14 bold')
-        txt = Label(win, text='Введите желаемые логин и пароль', font='Arial 14 bold')
-        button_reg = ttk.Button(win, text='Зарегистрироваться', command=lambda: registrate())
-
-        txt.place(x=135, y=70)
-        txtl.place(x=170, y=120)
-        txtp.place(x=170, y=150)
-        login.place(x=250, y=123)
-        password.place(x=250, y=153)
-        button_reg.place(x=245, y=210)
+    def games(self):
+        for widget in self.main.winfo_children():
+            widget.destroy()
+        Label(text='Игра', font='Arial 48 bold').place(x=460, y=200)
 
 
 root = Tk()
 root.title('Авторизация')
-root.geometry('720x300+600+320')
+root.geometry('1080x520+430+250')
 root.resizable(False, False)
 
 game(root)
