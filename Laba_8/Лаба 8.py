@@ -45,6 +45,9 @@ class selection:
             if self.point < 4:
                 messagebox.showwarning(title='Ошибка', message='Минимум четыре игрока.')
                 self.conditions = False
+            if self.point > 400:
+                messagebox.showwarning(title='Ошибка', message='Вы ввели слишком большое число.')
+                self.conditions = False
 
             if self.conditions:
                 self.calculations()
