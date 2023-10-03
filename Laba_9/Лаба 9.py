@@ -96,7 +96,7 @@ class game:
                     widget.destroy()
 
                 Label(self.main, text=f'Вы успешно авторизовались!', font='Arial 36 bold').place(x=175, y=160)
-                button = ttk.Button(self.main, text='Играть', style='my.TButton', command=lambda: self.games())
+                button = ttk.Button(self.main, text='Играть', style='my.TButton', command=self.play)
                 button.place(x=440, y=340)
 
             elif not f_p:
@@ -166,10 +166,26 @@ class game:
                 else:
                     messagebox.showwarning(title='Ошибка', message='Такой аккаунт уже существует')
 
-    def games(self):
-        for widget in self.main.winfo_children():
-            widget.destroy()
-        Label(text='Игра', font='Arial 48 bold').place(x=460, y=200)
+    def play(self):
+        BRD_ROWS = BRD_COLS = 8
+        CELL_SZ = 100
+
+        canvas = Canvas(self.main, width=CELL_SZ * BRD_ROWS, height=CELL_SZ * BRD_COLS)
+
+        cell_colors = ['white', 'black']
+        ci = 0  # color index
+
+        for row in range(BRD_ROWS):
+            for col in range(BRD_COLS):
+                x1, y1 = col * CELL_SZ, row * CELL_SZ
+                x2, y2 = col * CELL_SZ + CELL_SZ, row * CELL_SZ + CELL_SZ
+                canvas.create_rectangle((x1, y1), (x2, y2), fill=cell_colors[ci])
+
+                ci = not ci
+
+            ci = not ci
+        self.main.geometry('800x800+560+100')
+        canvas.pack()
 
 
 root = Tk()
